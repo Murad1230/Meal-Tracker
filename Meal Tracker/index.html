@@ -1,0 +1,1405 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>আমাদের মেস - অ্যাডভান্সড ড্যাশবোর্ড</title>
+    
+    <!-- FontAwesome & Libraries -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --secondary: #6366f1;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --bg-body: #f1f5f9;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --radius: 16px;
+            --shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, -apple-system, sans-serif;
+            background-color: var(--bg-body);
+            margin: 0;
+            color: var(--text-main);
+            padding-bottom: 50px;
+        }
+
+        .container { 
+            width: 95%; 
+            max-width: 1100px; 
+            margin: 20px auto; 
+        }
+
+        .login-card {
+            max-width: 400px; 
+            margin: 80px auto; 
+            background: var(--card-bg);
+            padding: 35px; 
+            border-radius: var(--radius); 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
+            text-align: center;
+        }
+
+        .login-card h2 { 
+            font-size: 22px; 
+            margin-bottom: 30px; 
+            color: var(--primary); 
+        }
+
+        .header {
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            background: var(--primary);
+            padding: 15px 25px; 
+            border-radius: var(--radius); 
+            color: white; 
+            margin-bottom: 20px; 
+            box-shadow: var(--shadow);
+        }
+
+        .logout-btn {
+            background: rgba(255,255,255,0.2); 
+            border: none; 
+            padding: 8px 15px; 
+            border-radius: 8px;
+            color: white; 
+            cursor: pointer; 
+            font-weight: bold;
+        }
+
+        .stats-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); 
+            gap: 15px; 
+            margin-bottom: 25px; 
+        }
+
+        .stat-card {
+            background: var(--card-bg); 
+            padding: 20px; 
+            border-radius: var(--radius);
+            box-shadow: var(--shadow); 
+            display: flex; 
+            align-items: center; 
+            gap: 15px; 
+            border-left: 5px solid var(--primary);
+        }
+
+        .stat-card.green { border-left-color: var(--success); }
+        .stat-card.orange { border-left-color: var(--warning); }
+        .stat-card.red { border-left-color: var(--danger); }
+        .stat-card.purple { border-left-color: #a855f7; }
+        .stat-card.blue { border-left-color: #0ea5e9; }
+
+        .stat-icon {
+            width: 50px; 
+            height: 50px; 
+            background: #f1f5f9; 
+            border-radius: 12px;
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 20px; 
+            color: var(--primary);
+        }
+
+        .stat-info h4 { 
+            margin: 0; 
+            color: var(--text-muted); 
+            font-size: 13px; 
+            text-transform: uppercase; 
+        }
+        
+        .stat-info h2 { 
+            margin: 5px 0 0; 
+            font-size: 24px; 
+        }
+        
+        .stat-info .meal-breakdown { 
+            font-size: 13px; 
+            color: var(--text-muted); 
+            margin-top: 4px; 
+            font-weight: 500;
+        }
+
+        .tabs {
+            display: flex; 
+            background: #e2e8f0; 
+            padding: 5px; 
+            border-radius: 12px; 
+            margin-bottom: 20px; 
+            overflow-x: auto;
+        }
+
+        .tab {
+            flex: 1; 
+            padding: 10px; 
+            text-align: center; 
+            cursor: pointer; 
+            border-radius: 10px; 
+            font-weight: 600; 
+            color: var(--text-muted); 
+            transition: 0.3s; 
+            white-space: nowrap;
+        }
+
+        .tab.active { 
+            background: var(--card-bg); 
+            color: var(--primary); 
+            box-shadow: var(--shadow); 
+        }
+
+        .content-card { 
+            background: var(--card-bg); 
+            padding: 25px; 
+            border-radius: var(--radius); 
+            box-shadow: var(--shadow); 
+            margin-bottom: 20px; 
+        }
+
+        .meal-row {
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 15px;
+            background: #f8fafc; 
+            margin-bottom: 10px; 
+            border-radius: 12px; 
+            border: 1px solid #e2e8f0;
+        }
+
+        .toggle-btn { 
+            border: none; 
+            padding: 10px 25px; 
+            border-radius: 25px; 
+            font-weight: bold; 
+            color: white; 
+            cursor: pointer; 
+            min-width: 90px; 
+            transition: 0.3s; 
+        }
+
+        .btn-on { background: var(--success); box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3); }
+        .btn-off { background: var(--danger); box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3); }
+        .toggle-btn:disabled { background: #cbd5e1 !important; box-shadow: none; cursor: not-allowed; }
+
+        .table-container { overflow-x: auto; }
+        
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-top: 10px; 
+        }
+        
+        th { 
+            background: #f8fafc; 
+            text-align: center; 
+            padding: 12px; 
+            color: var(--text-muted); 
+            font-size: 13px; 
+            border-bottom: 2px solid #e2e8f0; 
+        }
+        
+        td { 
+            padding: 15px 12px; 
+            text-align: center; 
+            border-bottom: 1px solid #f1f5f9; 
+            font-size: 14px; 
+        }
+        
+        tr:hover { background: #fcfcfc; }
+
+        input, select, textarea { 
+            width: 100%; 
+            padding: 12px; 
+            border: 1.5px solid #e2e8f0; 
+            border-radius: 10px; 
+            margin-top: 5px; 
+            font-size: 15px; 
+            box-sizing: border-box; 
+        }
+        
+        input:focus { outline: none; border-color: var(--primary); }
+
+        .btn-save { 
+            background: var(--primary); 
+            color: white; 
+            border: none; 
+            padding: 12px; 
+            width: 100%; 
+            border-radius: 10px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            margin-top: 15px; 
+            transition: 0.2s; 
+        }
+        
+        .btn-save:hover { opacity: 0.9; }
+        
+        .btn-pdf { 
+            background: #dc2626; 
+            color: white; 
+            padding: 10px 20px; 
+            font-size: 14px; 
+            margin-top: 20px; 
+            border-radius: 8px; 
+            border: none; 
+            font-weight: bold; 
+            cursor: pointer; 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 8px; 
+        }
+
+        .hidden { display: none !important; }
+        
+        .rule-box { 
+            background: #f8fafc; 
+            border: 1px solid #cbd5e1; 
+            padding: 15px; 
+            border-radius: 10px; 
+            margin-bottom: 10px; 
+        }
+        
+        .rule-box label { 
+            font-size: 13px; 
+            color: var(--text-muted); 
+            font-weight: bold; 
+        }
+        
+        .rule-box .rule-grid { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 15px; 
+            align-items: center; 
+            margin-top: 8px;
+        }
+        
+        .duty-box { 
+            background: #e0e7ff; 
+            border-left: 5px solid #4f46e5; 
+            padding: 15px; 
+            border-radius: 8px; 
+            margin-bottom: 20px; 
+            display: flex; 
+            align-items: center; 
+            gap: 15px;
+        }
+        
+        .duty-icon { 
+            font-size: 30px; 
+            color: #4f46e5; 
+        }
+        
+        @media (max-width: 600px) {
+            .stats-grid { grid-template-columns: 1fr; }
+            .header h2 { font-size: 16px; }
+            .rule-box .rule-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-card">
+        <h2><i class="fas fa-utensils"></i> মেস লগইন</h2>
+        <div style="text-align: left;">
+            <label>ইউজার সিলেক্ট করুন</label>
+            <select id="loginUser"></select><br><br>
+            <label>পিন কোড</label>
+            <input type="password" id="userPin" placeholder="পিন টাইপ করুন..." maxlength="4">
+        </div>
+        <button class="btn-save" id="loginBtn">লগইন করুন</button>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div id="mainDashboard" class="hidden">
+        <div class="header">
+            <h2 id="welcomeText"><i class="fas fa-user-circle"></i> লোডিং...</h2>
+            <button class="logout-btn" onclick="location.reload()">
+                <i class="fas fa-sign-out-alt"></i> লগআউট
+            </button>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card" id="balanceCard">
+                <div class="stat-icon"><i class="fas fa-wallet"></i></div>
+                <div class="stat-info">
+                    <h4>আমার ফাইনাল ব্যালেন্স</h4>
+                    <h2 id="topBalance">৳ ০.০</h2>
+                </div>
+            </div>
+            
+            <div class="stat-card blue" id="myMealsCard">
+                <div class="stat-icon" style="color: #0ea5e9; background: #e0f2fe;">
+                    <i class="fas fa-hamburger"></i>
+                </div>
+                <div class="stat-info">
+                    <h4>আমার মোট মিল</h4>
+                    <h2 id="myTotalMeals">০.০ টি</h2>
+                </div>
+            </div>
+
+            <div class="stat-card orange">
+                <div class="stat-icon"><i class="fas fa-chart-line"></i></div>
+                <div class="stat-info">
+                    <h4>মেসের বিলকৃত মোট মিল</h4>
+                    <h2 id="topMeals">০.০ টি</h2>
+                </div>
+            </div>
+            
+            <div class="stat-card purple">
+                <div class="stat-icon"><i class="fas fa-home"></i></div>
+                <div class="stat-info">
+                    <h4>মেসের ফিক্সড খরচ</h4>
+                    <h2 id="topFixedCost">৳ ০</h2>
+                </div>
+            </div>
+            
+            <div class="stat-card green">
+                <div class="stat-icon"><i class="fas fa-users"></i></div>
+                <div class="stat-info">
+                    <h4>আজকের মিল কাউন্ট</h4>
+                    <h2 id="topTodayTotal">0.0 টি</h2>
+                    <div class="meal-breakdown">
+                        🌅 সকাল: <span id="t-b">0</span> | 🌞 দুপুর: <span id="t-l">0</span> | 🌙 রাত: <span id="t-r">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TABS -->
+        <div class="tabs" id="mainTabs">
+            <div class="tab active" onclick="switchTab('dashboard')"><i class="fas fa-home"></i> হোম</div>
+            <div class="tab" onclick="switchTab('statement')"><i class="fas fa-receipt"></i> আমার হিসাব</div>
+            <div class="tab" onclick="switchTab('history')"><i class="fas fa-history"></i> ইতিহাস</div>
+            <div id="managerTabBtn" class="tab hidden" onclick="switchTab('manager')"><i class="fas fa-tasks"></i> ম্যানেজমেন্ট</div>
+            <div id="settingsTabBtn" class="tab hidden" onclick="switchTab('settings')"><i class="fas fa-cog"></i> সেটিংস</div>
+        </div>
+
+        <!-- HOME DASHBOARD -->
+        <div id="sec-dashboard">
+            <!-- Bazaar Duty Display -->
+            <div class="duty-box" id="dutyDisplayBox" style="display:none;">
+                <div class="duty-icon"><i class="fas fa-shopping-basket"></i></div>
+                <div>
+                    <h4 style="margin:0; color:#1e293b; font-size:16px;">আজকের বাজারের দায়িত্ব</h4>
+                    <p id="dutyText" style="margin:5px 0 0; color:#4f46e5; font-weight:bold;"></p>
+                </div>
+            </div>
+
+            <div class="content-card" style="border-left: 5px solid var(--warning); background: #fffbeb;">
+                <h4 style="margin: 0; color: #b45309;"><i class="fas fa-bullhorn"></i> নোটিশ বোর্ড</h4>
+                <p id="noticeText" style="margin: 10px 0 0; font-size: 14px;">নোটিশ লোড হচ্ছে...</p>
+            </div>
+
+            <!-- Chart Box -->
+            <div class="content-card">
+                <h3 style="margin-top:0;"><i class="fas fa-chart-pie"></i> এই মাসের খরচের গ্রাফিক্স</h3>
+                <div style="max-width: 300px; margin: 0 auto; padding: 10px;">
+                    <canvas id="expenseChart"></canvas>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h3><i class="fas fa-calendar-check"></i> আজকের মিল স্ট্যাটাস</h3>
+                <div class="meal-row">
+                    <span>🌅 সকাল</span>
+                    <button id="btn-breakfast" onclick="toggleMeal('breakfast')" class="toggle-btn btn-on">ON</button>
+                </div>
+                <div class="meal-row">
+                    <span>🌞 দুপুর</span>
+                    <button id="btn-lunch" onclick="toggleMeal('lunch')" class="toggle-btn btn-on">ON</button>
+                </div>
+                <div class="meal-row">
+                    <span>🌙 রাত</span>
+                    <button id="btn-dinner" onclick="toggleMeal('dinner')" class="toggle-btn btn-on">ON</button>
+                </div>
+                
+                <h3 style="margin-top: 25px;"><i class="fas fa-user-plus"></i> অ্যাডভান্সড গেস্ট মিল</h3>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                    <div>
+                        <select id="guestTime">
+                            <option value="breakfast">সকাল</option>
+                            <option value="lunch" selected>দুপুর</option>
+                            <option value="dinner">রাত</option>
+                        </select>
+                    </div>
+                    <div>
+                        <input type="number" id="guestCountInput" placeholder="সংখ্যা" min="0" value="0">
+                    </div>
+                </div>
+                <button onclick="saveAdvancedGuest()" class="btn-save" style="background:var(--success)">
+                    <i class="fas fa-check-circle"></i> গেস্ট মিল আপডেট
+                </button>
+            </div>
+
+            <div class="content-card" id="ledgerPrintArea">
+                <h2 style="text-align:center; color:var(--primary); margin-bottom:5px; display:none;" id="pdfTitle">আমাদের মেস - মাসিক রিপোর্ট</h2>
+                <p style="text-align:center; font-size:13px; color:gray; display:none; margin-top:0;" id="pdfDate"></p>
+                
+                <h3><i class="fas fa-list-alt"></i> মেস লেজার রিপোর্ট</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>নাম</th>
+                                <th>মোট মিল<br><small>(প্রকৃত/বিল)</small></th>
+                                <th>মিল খরচ</th>
+                                <th>ফিক্সড খরচ</th>
+                                <th>মোট জমা</th>
+                                <th>অবস্থা</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ledgerTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- PDF Download Button -->
+            <button class="btn-pdf" onclick="downloadPDF()">
+                <i class="fas fa-file-pdf"></i> মাসিক রিপোর্ট (PDF) ডাউনলোড করুন
+            </button>
+        </div>
+
+        <!-- MY STATEMENT TAB -->
+        <div id="sec-statement" class="hidden">
+            <div class="content-card">
+                <h3><i class="fas fa-receipt"></i> বিস্তারিত মাসিক হিসাব</h3>
+                <!-- Dropdown for Manager to view anyone's statement -->
+                <div id="managerStatementSelector" class="hidden" style="margin-bottom:15px; background:#f8fafc; padding:10px; border-radius:8px;">
+                    <label style="font-size:12px; font-weight:bold;">মেম্বার সিলেক্ট করুন (শুধু ম্যানেজারের জন্য):</label>
+                    <select id="statementMemSelect" onchange="renderStatementTable()"></select>
+                </div>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>তারিখ</th>
+                                <th>সকাল</th>
+                                <th>দুপুর</th>
+                                <th>রাত</th>
+                                <th>গেস্ট</th>
+                                <th>জমা (৳)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="statementTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- HISTORY TAB -->
+        <div id="sec-history" class="hidden">
+            <div class="content-card">
+                <h3 style="color: var(--success);"><i class="fas fa-shopping-cart"></i> বাজার ইতিহাস</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr><th>তারিখ</th><th>বাজারী</th><th>টাকা</th></tr>
+                        </thead>
+                        <tbody id="histBazaar"></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="content-card">
+                <h3 style="color: #b45309;"><i class="fas fa-seedling"></i> চালের ইতিহাস</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr><th>তারিখ</th><th>বিবরণ</th><th>টাকা</th></tr>
+                        </thead>
+                        <tbody id="histRice"></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="content-card">
+                <h3 style="color: #6b21a8;"><i class="fas fa-home"></i> অতিরিক্ত/ফিক্সড খরচ ইতিহাস</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr><th>তারিখ</th><th>বিবরণ</th><th>টাকা</th></tr>
+                        </thead>
+                        <tbody id="histFixed"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- MANAGER TAB -->
+        <div id="sec-manager" class="hidden">
+            
+            <!-- Set Duty -->
+            <div class="content-card" style="border-left: 5px solid #0ea5e9;">
+                <h3><i class="fas fa-calendar-alt"></i> বাজারের ডিউটি সেট করুন</h3>
+                <label>তারিখ নির্বাচন করুন</label>
+                <input type="date" id="dutyDate">
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px;">
+                    <div>
+                        <label>বাজারী ১</label>
+                        <select id="dutyMem1"></select>
+                    </div>
+                    <div>
+                        <label>বাজারী ২</label>
+                        <select id="dutyMem2">
+                            <option value="">-- কেউ না --</option>
+                        </select>
+                    </div>
+                </div>
+                <button class="btn-save" style="background:#0ea5e9" onclick="saveBazaarDuty()">
+                    <i class="fas fa-check"></i> ডিউটি সেভ করুন
+                </button>
+            </div>
+
+            <!-- Rules -->
+            <div class="content-card" style="border-left: 5px solid var(--primary);">
+                <h3><i class="fas fa-balance-scale"></i> এই মাসের মিল নিয়ম (Rules)</h3>
+                <div class="rule-box">
+                    <label>শর্ত ১: লো-মিল পেনাল্টি</label>
+                    <div class="rule-grid">
+                        <div>
+                            <input type="number" id="ruleT1" placeholder="উদা: ৫" min="0">
+                            <small>এর কম খেলে</small>
+                        </div>
+                        <div>
+                            <input type="number" id="ruleP1" placeholder="উদা: ২০" min="0">
+                            <small>টি বিল হবে</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="rule-box">
+                    <label>শর্ত ২: বেস মিল চার্জ</label>
+                    <div class="rule-grid">
+                        <div>
+                            <input type="number" id="ruleT2" placeholder="উদা: ৫০" min="0">
+                            <small>এর কম খেলে</small>
+                        </div>
+                        <div>
+                            <input type="number" id="ruleP2" placeholder="উদা: ৫০" min="0">
+                            <small>টি বিল হবে</small>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn-save" onclick="saveRules()">
+                    <i class="fas fa-save"></i> নিয়ম সেভ করুন
+                </button>
+            </div>
+
+            <!-- Super Edit & Reset-->
+            <div class="content-card" style="border-left: 5px solid var(--danger); background: #fef2f2;">
+                <h3 style="color: var(--danger); margin-top:0;"><i class="fas fa-bolt"></i> সুপার অ্যাডমিন পাওয়ার</h3>
+                <select id="superEditType" onchange="toggleSuperEdit()">
+                    <option value="">-- নির্বাচন করুন --</option>
+                    <option value="edit-cost">১. মেসের মোট খরচ এডিট</option>
+                    <option value="edit-deposit">২. মেম্বারের মোট জমার পরিমাণ এডিট</option>
+                    <option value="edit-meal">৩. যেকোনো দিনের মিল/গেস্ট মিল এডিট</option>
+                    <option value="edit-reset" style="color:red; font-weight:bold;">৪. চলতি মাসের সব ডাটা রিসেট করুন</option>
+                </select>
+                
+                <div id="se-cost" class="super-edit-fields hidden" style="margin-top:15px; border-top:1px solid #fca5a5; padding-top:15px;">
+                    <input type="number" id="newBazTot" placeholder="সঠিক বাজার খরচ...">
+                    <input type="number" id="newRicTot" placeholder="সঠিক চালের খরচ...">
+                    <input type="number" id="newFixTot" placeholder="সঠিক ফিক্সড খরচ...">
+                    <button class="btn-save" style="background:var(--danger)" onclick="saveSuperCost()">আপডেট</button>
+                </div>
+                
+                <div id="se-deposit" class="super-edit-fields hidden" style="margin-top:15px; border-top:1px solid #fca5a5; padding-top:15px;">
+                    <select id="superEditMem" onchange="loadCurrentDeposit()"></select>
+                    <p style="font-size:14px; margin:8px 0; color:var(--text-main)">
+                        বর্তমান জমা: <b style="color:var(--danger);">৳<span id="curDep">0</span></b>
+                    </p>
+                    <input type="number" id="newDepTot" placeholder="সঠিক জমা বসান">
+                    <button class="btn-save" style="background:var(--danger)" onclick="saveSuperDeposit()">আপডেট</button>
+                </div>
+                
+                <div id="se-meal" class="super-edit-fields hidden" style="margin-top:15px; border-top:1px solid #fca5a5; padding-top:15px;">
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                        <input type="date" id="superEditDate">
+                        <select id="superEditMealMem"></select>
+                    </div>
+                    <button class="btn-save" style="background:var(--warning); color:#000;" onclick="loadPastMeal()">লোড করুন</button>
+                    
+                    <div id="pastMealData" class="hidden" style="margin-top:10px; background:#fff; padding:10px;">
+                        <div class="rule-grid">
+                            <div><label>সকাল</label><select id="se-brk"><option value="ON">ON</option><option value="OFF">OFF</option></select></div>
+                            <div><label>গেস্ট</label><input type="number" id="se-g-brk"></div>
+                            <div><label>দুপুর</label><select id="se-lun"><option value="ON">ON</option><option value="OFF">OFF</option></select></div>
+                            <div><label>গেস্ট</label><input type="number" id="se-g-lun"></div>
+                            <div><label>রাত</label><select id="se-din"><option value="ON">ON</option><option value="OFF">OFF</option></select></div>
+                            <div><label>গেস্ট</label><input type="number" id="se-g-din"></div>
+                        </div>
+                        <button class="btn-save" style="background:var(--danger)" onclick="saveSuperMeal()">আপডেট</button>
+                    </div>
+                </div>
+
+                <!-- Reset Data Section -->
+                <div id="se-reset" class="super-edit-fields hidden" style="margin-top:15px; border-top: 1px solid #fca5a5; padding-top: 15px;">
+                    <p style="color:var(--danger); font-size:14px; font-weight:bold;">সতর্কতা: এটি ক্লিক করলে চলতি মাসের সমস্ত জমা, খরচ, মিল এবং ইতিহাস চিরতরে মুছে যাবে!</p>
+                    <button class="btn-save" style="background:#b91c1c" onclick="resetMonthlyData()">
+                        <i class="fas fa-trash-alt"></i> হ্যাঁ, সব হিসাব শূন্য করুন
+                    </button>
+                </div>
+
+            </div>
+
+            <!-- Daily Entry -->
+            <div class="content-card">
+                <h3><i class="fas fa-money-check-alt"></i> খরচ ও জমা এন্ট্রি</h3>
+                <select id="entryType" onchange="toggleEntryFields()">
+                    <option value="deposit">📥 মেম্বার জমা</option>
+                    <option value="bazaar">🛒 তরকারি বাজার</option>
+                    <option value="rice">🌾 চালের খরচ</option>
+                    <option value="fixed">🏠 ফিক্সড খরচ</option>
+                </select>
+                
+                <div id="div-deposit" class="entry-fields">
+                    <select id="depMember"></select>
+                    <input type="number" id="depAmount" placeholder="জমার পরিমাণ...">
+                </div>
+                
+                <div id="div-bazaar" class="entry-fields hidden">
+                    <select id="shopper1"></select>
+                    <select id="shopper2"><option value="">-- কেউ না --</option></select>
+                    <input type="number" id="bazAmount" placeholder="বাজার খরচ...">
+                </div>
+                
+                <div id="div-rice" class="entry-fields hidden">
+                    <input type="text" id="riceNote" placeholder="বিবরণ...">
+                    <input type="number" id="riceAmount" placeholder="চালের দাম...">
+                </div>
+                
+                <div id="div-fixed" class="entry-fields hidden">
+                    <input type="text" id="fixedNote" placeholder="বিবরণ...">
+                    <input type="number" id="fixedAmount" placeholder="মোট টাকার পরিমাণ...">
+                </div>
+                
+                <button class="btn-save" onclick="saveEntry()">
+                    <i class="fas fa-save"></i> ডেটা সেভ করুন
+                </button>
+            </div>
+            
+            <div class="content-card">
+                <h3><i class="fas fa-edit"></i> নোটিশ আপডেট</h3>
+                <textarea id="mgrNotice" rows="3"></textarea>
+                <button class="btn-save" onclick="updateNotice()">আপডেট</button>
+            </div>
+        </div>
+
+        <!-- SETTINGS TAB -->
+        <div id="sec-settings" class="hidden">
+            <div class="content-card">
+                <input type="text" id="newMemName" placeholder="নতুন মেম্বারের নাম...">
+                <button class="btn-save" onclick="addNewMember()">যোগ করুন</button>
+            </div>
+            <div class="content-card">
+                <h3><i class="fas fa-user-edit"></i> মেম্বার নাম ও ছাড় এডিট</h3>
+                <div id="editMemList"></div>
+                <button class="btn-save" onclick="saveMemberEdits()">সব সেভ করুন</button>
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="content-card" style="background: var(--primary); color: white; display: flex; justify-content: space-around; text-align: center;">
+            <div>
+                <small>মিল রেট</small><br>
+                <strong id="liveRate">০.০০</strong>
+            </div>
+            <div>
+                <small>মোট মিল খরচ</small><br>
+                <strong id="liveTotalCost">০</strong>
+            </div>
+            <div>
+                <small>ক্যাশ ইন হ্যান্ড</small><br>
+                <strong id="liveCash">০</strong>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="module">
+    import { getDatabase, ref, set, update, get, onValue, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyDPBx-20Ps0tGq0lHTGeRaS5Ah6tNd17pQ",
+        authDomain: "murad-5f082.firebaseapp.com",
+        databaseURL: "https://murad-5f082-default-rtdb.firebaseio.com",
+        projectId: "murad-5f082"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    let members = [];
+    let memberNames = {};
+    let memberExceptions = {};
+    let messRules = { t1: 5, p1: 20, t2: 50, p2: 50 };
+    let currentUser = "";
+    let isManager = false;
+    let monthRawData = {};
+    let globalDeposits = {};
+
+    const today = new Date();
+    const dateKey = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+    const monthKey = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}`;
+    
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    document.getElementById('dutyDate').value = tomorrow.toISOString().split('T')[0];
+
+    document.getElementById('userPin').addEventListener('keypress', (e) => { 
+        if(e.key === 'Enter') login(); 
+    });
+    
+    document.getElementById('loginBtn').onclick = login;
+
+    function login() {
+        const user = document.getElementById('loginUser').value;
+        const pin = document.getElementById('userPin').value;
+        
+        if (pin === "0000") {
+            isManager = true; 
+            showDashboard();
+        } else if (pin === "1234") {
+            currentUser = user; 
+            isManager = false; 
+            showDashboard();
+        } else {
+            alert("ভুল পিন!");
+        }
+    }
+
+    function showDashboard() {
+        document.getElementById('loginScreen').classList.add('hidden');
+        document.getElementById('mainDashboard').classList.remove('hidden');
+        
+        if (isManager) {
+            document.getElementById('managerTabBtn').classList.remove('hidden');
+            document.getElementById('settingsTabBtn').classList.remove('hidden');
+            document.getElementById('managerStatementSelector').classList.remove('hidden');
+            document.getElementById('welcomeText').innerHTML = `<i class="fas fa-user-shield"></i> মেস ম্যানেজার প্যানেল`;
+            document.getElementById('myMealsCard').style.display = 'none';
+        } else {
+            document.getElementById('welcomeText').innerHTML = `<i class="fas fa-user"></i> ${memberNames[currentUser]}`;
+            document.getElementById('myMealsCard').style.display = 'flex';
+            document.getElementById('statementMemSelect').value = currentUser;
+        }
+        
+        checkTimeLock();
+        startRealtimeSync();
+    }
+
+    window.switchTab = (tabId) => {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        event.currentTarget.classList.add('active');
+        
+        ['sec-dashboard', 'sec-statement', 'sec-history', 'sec-manager', 'sec-settings'].forEach(id => {
+            document.getElementById(id).classList.add('hidden');
+        });
+        
+        document.getElementById('sec-' + tabId).classList.remove('hidden');
+        
+        if (tabId === 'statement') {
+            renderStatementTable();
+        }
+    }
+
+    window.toggleEntryFields = () => {
+        const type = document.getElementById('entryType').value;
+        document.querySelectorAll('.entry-fields').forEach(d => d.classList.add('hidden'));
+        document.getElementById('div-' + type).classList.remove('hidden');
+    }
+
+    function renderChart(baz, ric, fix) {
+        const ctx = document.getElementById('expenseChart').getContext('2d');
+        if (window.expensePieChart) {
+            window.expensePieChart.destroy();
+        }
+        window.expensePieChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: { 
+                labels: ['তরকারি বাজার', 'চালের খরচ', 'ফিক্সড খরচ'], 
+                datasets: [{ 
+                    data: [baz, ric, fix], 
+                    backgroundColor: ['#10b981', '#f59e0b', '#a855f7'], 
+                    borderWidth: 2 
+                }] 
+            },
+            options: { 
+                responsive: true, 
+                plugins: { 
+                    legend: { position: 'bottom' } 
+                } 
+            }
+        });
+    }
+
+    // PDF Download Fix
+    window.downloadPDF = () => {
+        document.getElementById('pdfTitle').style.display = 'block';
+        document.getElementById('pdfDate').innerText = `মাসের হিসাব: ${monthKey}`;
+        document.getElementById('pdfDate').style.display = 'block';
+        
+        const element = document.getElementById('ledgerPrintArea');
+        const tblContainer = element.querySelector('.table-container');
+        
+        const originalOverflow = tblContainer ? tblContainer.style.overflowX : '';
+        if (tblContainer) {
+            tblContainer.style.overflowX = 'visible';
+        }
+        
+        window.scrollTo(0, 0);
+
+        const opt = {
+            margin:       0.3,
+            filename:     `Mess-Ledger-${monthKey}.pdf`,
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2, useCORS: true, scrollY: 0 },
+            jsPDF:        { unit: 'in', format: 'letter', orientation: 'landscape' }
+        };
+        
+        setTimeout(() => {
+            html2pdf().set(opt).from(element).save().then(() => {
+                document.getElementById('pdfTitle').style.display = 'none';
+                document.getElementById('pdfDate').style.display = 'none';
+                if (tblContainer) {
+                    tblContainer.style.overflowX = originalOverflow;
+                }
+            });
+        }, 100);
+    }
+
+    window.renderStatementTable = () => {
+        const targetUser = isManager ? document.getElementById('statementMemSelect').value : currentUser;
+        if (!targetUser) return;
+        
+        const sortedDays = Object.keys(monthRawData).filter(d => d.includes('-') && d.length > 8).sort();
+        let html = "";
+        
+        sortedDays.forEach(day => {
+            const dData = monthRawData[day][targetUser] || {};
+            const brk = dData.breakfast || "ON"; 
+            const lun = dData.lunch || "ON"; 
+            const din = dData.dinner || "ON";
+            
+            const gMeals = (parseFloat(dData.guest_breakfast)||0)*0.5 + 
+                           (parseFloat(dData.guest_lunch)||0) + 
+                           (parseFloat(dData.guest_dinner)||0);
+                           
+            const dep = parseFloat(dData.deposit) || 0;
+            
+            const bHtml = brk==="OFF" ? `<span style="color:var(--danger)">OFF</span>` : `0.5`;
+            const lHtml = lun==="OFF" ? `<span style="color:var(--danger)">OFF</span>` : `1.0`;
+            const dHtml = din==="OFF" ? `<span style="color:var(--danger)">OFF</span>` : `1.0`;
+            
+            html += `<tr>
+                <td style="font-weight:bold; font-size:12px;">${day.split('-').reverse().join('/')}</td>
+                <td>${bHtml}</td>
+                <td>${lHtml}</td>
+                <td>${dHtml}</td>
+                <td style="color:var(--warning); font-weight:bold">${gMeals > 0 ? '+'+gMeals : '-'}</td>
+                <td style="color:var(--success); font-weight:bold">${dep > 0 ? '৳'+dep : '-'}</td>
+            </tr>`;
+        });
+        
+        document.getElementById('statementTableBody').innerHTML = html || "<tr><td colspan='6'>কোনো হিসাব নেই</td></tr>";
+    }
+
+    function startRealtimeSync() {
+        onValue(ref(db, `records/memberConfig`), (snap) => { 
+            memberNames = snap.val() || {}; 
+            members = Object.keys(memberNames); 
+            updateDropdowns(); 
+            renderSettingsList(); 
+        });
+        
+        onValue(ref(db, `records/memberExceptions`), snap => { 
+            memberExceptions = snap.val() || {}; 
+            renderSettingsList(); 
+        });
+        
+        onValue(ref(db, `records/${monthKey}/messRules`), snap => { 
+            if (snap.val()) {
+                messRules = snap.val(); 
+            }
+            if (isManager) { 
+                document.getElementById('ruleT1').value = messRules.t1; 
+                document.getElementById('ruleP1').value = messRules.p1; 
+                document.getElementById('ruleT2').value = messRules.t2; 
+                document.getElementById('ruleP2').value = messRules.p2; 
+            } 
+        });
+        
+        onValue(ref(db, `records/${monthKey}/noticeBoard`), snap => {
+            document.getElementById('noticeText').innerText = snap.val() || "কোনো নোটিশ নেই।";
+        });
+        
+        onValue(ref(db, `records/bazaarDuty/${dateKey}`), snap => {
+            const duty = snap.val();
+            if (duty && duty.s1) {
+                let txt = memberNames[duty.s1]; 
+                if (duty.s2) {
+                    txt += ` এবং ${memberNames[duty.s2]}`;
+                }
+                document.getElementById('dutyText').innerText = txt; 
+                document.getElementById('dutyDisplayBox').style.display = 'flex';
+            } else {
+                document.getElementById('dutyDisplayBox').style.display = 'none';
+            }
+        });
+        
+        syncLedger();
+    }
+
+    function syncLedger() {
+        onValue(ref(db, `records/${monthKey}`), (snap) => {
+            const data = snap.val() || {}; 
+            monthRawData = data; 
+            
+            let regBazaar = parseFloat(data.totalBazaarCost) || 0; 
+            let riceBazaar = parseFloat(data.totalRiceCost) || 0; 
+            let fixedBazaar = parseFloat(data.totalFixedCost) || 0; 
+            
+            let mealOnlyExpenses = regBazaar + riceBazaar;
+            
+            renderChart(regBazaar, riceBazaar, fixedBazaar); 
+            
+            let mOwnMeals = {}, mGuest = {}, mDeposit = {}; 
+            members.forEach(m => { 
+                mOwnMeals[m] = 0; 
+                mGuest[m] = 0; 
+                mDeposit[m] = 0; 
+            });
+            
+            let tb = 0, tl = 0, tr = 0;
+
+            Object.keys(data).forEach(day => {
+                if (day.length > 8 && day.includes('-')) { 
+                    members.forEach(m => {
+                        const userDay = data[day][m] || {}; 
+                        let ownDayMeals = 0;
+                        
+                        if (userDay.breakfast !== "OFF") ownDayMeals += 0.5; 
+                        if (userDay.lunch !== "OFF") ownDayMeals += 1.0; 
+                        if (userDay.dinner !== "OFF") ownDayMeals += 1.0;
+                        
+                        mOwnMeals[m] += ownDayMeals;
+                        
+                        let guestBreakfast = parseFloat(userDay.guest_breakfast) || 0; 
+                        let guestLunch = parseFloat(userDay.guest_lunch) || 0; 
+                        let guestDinner = parseFloat(userDay.guest_dinner) || 0;
+                        
+                        let totalDayGuestMeals = (guestBreakfast * 0.5) + (guestLunch * 1.0) + (guestDinner * 1.0);
+                        mGuest[m] += totalDayGuestMeals; 
+                        mDeposit[m] += parseFloat(userDay.deposit) || 0;
+                        
+                        if (day === dateKey) {
+                            if (userDay.breakfast !== "OFF") tb += 0.5; 
+                            if (userDay.lunch !== "OFF") tl += 1.0; 
+                            if (userDay.dinner !== "OFF") tr += 1.0;
+                            
+                            tb += (guestBreakfast * 0.5); 
+                            tl += (guestLunch * 1.0); 
+                            tr += (guestDinner * 1.0);
+                        }
+                    });
+                }
+            });
+
+            let totalBilledMealsAll = 0; 
+            let mBilledMeals = {}; 
+            
+            members.forEach(m => {
+                globalDeposits[m] = mDeposit[m]; 
+                let actualOwn = mOwnMeals[m]; 
+                let billedOwn = actualOwn;
+                
+                if (!memberExceptions[m]) { 
+                    if (actualOwn < messRules.t1) {
+                        billedOwn = messRules.p1; 
+                    } else if (actualOwn < messRules.t2) {
+                        billedOwn = messRules.p2;
+                    }
+                }
+                
+                let totalUserBilled = billedOwn + mGuest[m]; 
+                mBilledMeals[m] = totalUserBilled; 
+                totalBilledMealsAll += totalUserBilled;
+            });
+
+            const rate = totalBilledMealsAll > 0 ? (mealOnlyExpenses / totalBilledMealsAll) : 0;
+            const perMemberFixedShare = members.length > 0 ? (fixedBazaar / members.length) : 0;
+
+            document.getElementById('topMeals').innerText = totalBilledMealsAll.toFixed(1) + " টি"; 
+            document.getElementById('topFixedCost').innerText = "৳ " + fixedBazaar;
+            document.getElementById('liveRate').innerText = rate.toFixed(2); 
+            document.getElementById('liveTotalCost').innerText = mealOnlyExpenses;
+            document.getElementById('topTodayTotal').innerText = (tb + tl + tr).toFixed(1) + " টি"; 
+            document.getElementById('t-b').innerText = tb.toFixed(1); 
+            document.getElementById('t-l').innerText = tl.toFixed(1); 
+            document.getElementById('t-r').innerText = tr.toFixed(1);
+
+            let ledgerHtml = ""; 
+            let totalAllDeposit = 0;
+            
+            members.forEach(m => {
+                let actualTotal = mOwnMeals[m] + mGuest[m]; 
+                let billedTotal = mBilledMeals[m];
+                
+                const mealCost = billedTotal * rate; 
+                const finalTotalCost = mealCost + perMemberFixedShare; 
+                const bal = mDeposit[m] - finalTotalCost; 
+                totalAllDeposit += mDeposit[m];
+                
+                let displayMeals = actualTotal === billedTotal 
+                    ? `<b>${actualTotal.toFixed(1)}</b>` 
+                    : `${actualTotal.toFixed(1)}<br><small style="color:var(--danger); font-weight:bold">(বিল: ${billedTotal.toFixed(1)})</small>`;
+                    
+                ledgerHtml += `<tr>
+                    <td><strong>${memberNames[m]}</strong>${memberExceptions[m] ? '<br><small style="color:var(--success)">[ছাড়প্রাপ্ত]</small>' : ''}</td>
+                    <td>${displayMeals}</td>
+                    <td>৳ ${mealCost.toFixed(1)}</td>
+                    <td style="color:#a855f7; font-weight:bold">৳ ${perMemberFixedShare.toFixed(1)}</td>
+                    <td>৳ ${mDeposit[m]}</td>
+                    <td style="color:${bal >= 0 ? '#10b981' : '#ef4444'}"><b>${bal.toFixed(1)}</b></td>
+                </tr>`;
+            });
+            
+            document.getElementById('ledgerTableBody').innerHTML = ledgerHtml; 
+            document.getElementById('liveCash').innerText = totalAllDeposit - (mealOnlyExpenses + fixedBazaar);
+
+            if (!isManager) {
+                let myActual = mOwnMeals[currentUser] + mGuest[currentUser]; 
+                let myBilled = mBilledMeals[currentUser];
+                const myFinalTotalCost = (myBilled * rate) + perMemberFixedShare; 
+                const myBal = mDeposit[currentUser] - myFinalTotalCost;
+                
+                document.getElementById('myTotalMeals').innerHTML = myActual === myBilled 
+                    ? `${myActual.toFixed(1)} টি` 
+                    : `${myActual.toFixed(1)} টি <br><span style="font-size:14px; color:var(--primary); font-weight:bold;">বিল হবে: ${myBilled.toFixed(1)}</span>`;
+                    
+                document.getElementById('topBalance').innerText = "৳ " + myBal.toFixed(1); 
+                document.getElementById('balanceCard').className = `stat-card ${myBal >= 0 ? 'green' : 'red'}`;
+                
+                const tData = data[dateKey]?.[currentUser] || {};
+                
+                ['breakfast', 'lunch', 'dinner'].forEach(type => { 
+                    const btn = document.getElementById('btn-' + type); 
+                    const state = tData[type] || "ON"; 
+                    btn.innerText = state; 
+                    btn.className = `toggle-btn ${state === "ON" ? "btn-on" : "btn-off"}`; 
+                });
+                
+                document.getElementById('guestCountInput').value = tData["guest_" + document.getElementById('guestTime').value] || 0;
+            }
+            
+            if (document.getElementById('sec-statement').classList.contains('active') || !document.getElementById('sec-statement').classList.contains('hidden')) {
+                renderStatementTable();
+            }
+
+            let histBazHtml = "", histRiceHtml = "", histFixedHtml = "";
+            
+            if (data.bazaarHistory) {
+                Object.values(data.bazaarHistory).sort((a,b) => b.date > a.date ? 1 : -1).forEach(h => {
+                    if (h.type === 'rice') {
+                        histRiceHtml += `<tr><td>${h.date}</td><td>${h.details}</td><td style="color:#b45309; font-weight:bold;">৳ ${h.amount}</td></tr>`;
+                    } else if (h.type === 'fixed') {
+                        histFixedHtml += `<tr><td>${h.date}</td><td>${h.details}</td><td style="color:#6b21a8; font-weight:bold;">৳ ${h.amount}</td></tr>`;
+                    } else { 
+                        let shoppers = memberNames[h.shopper1]; 
+                        if (h.shopper2) {
+                            shoppers += ' ও ' + memberNames[h.shopper2]; 
+                        }
+                        histBazHtml += `<tr><td>${h.date}</td><td>${shoppers}</td><td style="color:#10b981; font-weight:bold;">৳ ${h.amount}</td></tr>`; 
+                    }
+                });
+            }
+            
+            document.getElementById('histBazaar').innerHTML = histBazHtml || "<tr><td colspan='3'>কোনো এন্ট্রি নেই</td></tr>"; 
+            document.getElementById('histRice').innerHTML = histRiceHtml || "<tr><td colspan='3'>কোনো এন্ট্রি নেই</td></tr>"; 
+            document.getElementById('histFixed').innerHTML = histFixedHtml || "<tr><td colspan='3'>কোনো এন্ট্রি নেই</td></tr>";
+        });
+    }
+
+    window.toggleMeal = (type) => { 
+        const btn = document.getElementById('btn-' + type); 
+        update(ref(db, `records/${monthKey}/${dateKey}/${currentUser}`), { 
+            [type]: btn.innerText === "ON" ? "OFF" : "ON" 
+        }); 
+    }
+    
+    window.saveAdvancedGuest = () => {
+        const timeSlot = "guest_" + document.getElementById('guestTime').value;
+        const count = parseInt(document.getElementById('guestCountInput').value) || 0;
+        update(ref(db, `records/${monthKey}/${dateKey}/${currentUser}`), { 
+            [timeSlot]: count 
+        }).then(() => alert("গেস্ট মিল আপডেট হয়েছে!"));
+    }
+    
+    window.saveRules = () => {
+        update(ref(db, `records/${monthKey}/messRules`), { 
+            t1: parseFloat(document.getElementById('ruleT1').value)||0, 
+            p1: parseFloat(document.getElementById('ruleP1').value)||0, 
+            t2: parseFloat(document.getElementById('ruleT2').value)||0, 
+            p2: parseFloat(document.getElementById('ruleP2').value)||0 
+        }).then(() => alert("নিয়ম সেভ হয়েছে!"));
+    }
+    
+    window.updateNotice = () => {
+        set(ref(db, `records/${monthKey}/noticeBoard`), document.getElementById('mgrNotice').value)
+            .then(() => alert("নোটিশ আপডেট হয়েছে"));
+    }
+    
+    window.saveBazaarDuty = () => { 
+        const d = document.getElementById('dutyDate').value; 
+        const s1 = document.getElementById('dutyMem1').value; 
+        const s2 = document.getElementById('dutyMem2').value; 
+        
+        if (!d || !s1) return alert("তারিখ এবং অন্তত একজন বাজারী সিলেক্ট করুন!"); 
+        
+        set(ref(db, `records/bazaarDuty/${d}`), { s1, s2 })
+            .then(() => alert("বাজারের ডিউটি সেভ হয়েছে!")); 
+    }
+    
+    window.saveEntry = () => {
+        const type = document.getElementById('entryType').value;
+        
+        if (type === 'deposit') {
+            const m = document.getElementById('depMember').value; 
+            const amt = parseFloat(document.getElementById('depAmount').value); 
+            if (!amt) return;
+            
+            get(ref(db, `records/${monthKey}/${dateKey}/${m}/deposit`)).then(snap => { 
+                update(ref(db, `records/${monthKey}/${dateKey}/${m}`), { 
+                    deposit: (parseFloat(snap.val())||0) + amt 
+                }).then(() => { 
+                    document.getElementById('depAmount').value = ""; 
+                    alert("জমা সফল!"); 
+                }); 
+            });
+        } else if (type === 'bazaar') {
+            const s1 = document.getElementById('shopper1').value; 
+            const s2 = document.getElementById('shopper2').value; 
+            const amt = parseFloat(document.getElementById('bazAmount').value); 
+            if (!amt) return;
+            
+            get(ref(db, `records/${monthKey}/totalBazaarCost`)).then(snap => { 
+                update(ref(db, `records/${monthKey}`), { 
+                    totalBazaarCost: (parseFloat(snap.val())||0) + amt 
+                }); 
+                set(ref(db, `records/${monthKey}/bazaarHistory/${Date.now()}`), { 
+                    date: dateKey, type: 'regular', shopper1: s1, shopper2: s2, amount: amt 
+                }).then(() => { 
+                    document.getElementById('bazAmount').value = ""; 
+                    alert("বাজার সেভ হয়েছে"); 
+                }); 
+            });
+        } else if (type === 'rice') {
+            const note = document.getElementById('riceNote').value; 
+            const amt = parseFloat(document.getElementById('riceAmount').value); 
+            if (!amt) return;
+            
+            get(ref(db, `records/${monthKey}/totalRiceCost`)).then(snap => { 
+                update(ref(db, `records/${monthKey}`), { 
+                    totalRiceCost: (parseFloat(snap.val())||0) + amt 
+                }); 
+                set(ref(db, `records/${monthKey}/bazaarHistory/${Date.now()}`), { 
+                    date: dateKey, type: 'rice', details: note, amount: amt 
+                }).then(() => { 
+                    document.getElementById('riceAmount').value = ""; 
+                    alert("চালের খরচ সেভ হয়েছে"); 
+                }); 
+            });
+        } else if (type === 'fixed') {
+            const note = document.getElementById('fixedNote').value || "ফিক্সড খরচ"; 
+            const amt = parseFloat(document.getElementById('fixedAmount').value); 
+            if (!amt) return;
+            
+            get(ref(db, `records/${monthKey}/totalFixedCost`)).then(snap => { 
+                update(ref(db, `records/${monthKey}`), { 
+                    totalFixedCost: (parseFloat(snap.val())||0) + amt 
+                }); 
+                set(ref(db, `records/${monthKey}/bazaarHistory/${Date.now()}`), { 
+                    date: dateKey, type: 'fixed', details: note, amount: amt 
+                }).then(() => { 
+                    document.getElementById('fixedAmount').value = ""; 
+                    alert("ফিক্সড খরচ এন্ট্রি করা হয়েছে!"); 
+                }); 
+            });
+        }
+    }
+    
+    window.toggleSuperEdit = () => { 
+        const type = document.getElementById('superEditType').value; 
+        document.querySelectorAll('.super-edit-fields').forEach(el => el.classList.add('hidden')); 
+        if (type) { 
+            document.getElementById('se-' + type.split('-')[1]).classList.remove('hidden'); 
+            if (type === 'edit-deposit') {
+                loadCurrentDeposit(); 
+            }
+        } 
+    }
+    
+    window.loadCurrentDeposit = () => {
+        document.getElementById('curDep').innerText = globalDeposits[document.getElementById('superEditMem').value] || 0;
+    }
+    
+    window.saveSuperCost = () => { 
+        let u = {}; 
+        if (document.getElementById('newBazTot').value) u.totalBazaarCost = parseFloat(document.getElementById('newBazTot').value); 
+        if (document.getElementById('newRicTot').value) u.totalRiceCost = parseFloat(document.getElementById('newRicTot').value); 
+        if (document.getElementById('newFixTot').value) u.totalFixedCost = parseFloat(document.getElementById('newFixTot').value); 
+        if (Object.keys(u).length > 0) {
+            update(ref(db, `records/${monthKey}`), u).then(() => { 
+                alert("খরচ আপডেট হয়েছে!"); 
+                toggleSuperEdit(); 
+            }); 
+        }
+    }
+    
+    window.saveSuperDeposit = () => { 
+        const m = document.getElementById('superEditMem').value; 
+        const n = parseFloat(document.getElementById('newDepTot').value); 
+        if (isNaN(n)) return; 
+        const d = n - (globalDeposits[m] || 0); 
+        if (d !== 0) {
+            get(ref(db, `records/${monthKey}/${dateKey}/${m}/deposit`)).then(snap => { 
+                update(ref(db, `records/${monthKey}/${dateKey}/${m}`), { 
+                    deposit: (parseFloat(snap.val())||0) + d 
+                }).then(() => { 
+                    alert("জমা আপডেট হয়েছে!"); 
+                    setTimeout(loadCurrentDeposit, 500); 
+                }); 
+            }); 
+        }
+    }
+    
+    window.loadPastMeal = () => { 
+        const dt = document.getElementById('superEditDate').value; 
+        if (!dt) return; 
+        const m = document.getElementById('superEditMealMem').value; 
+        
+        get(ref(db, `records/${dt.substring(0, 7)}/${dt}/${m}`)).then(snap => { 
+            const data = snap.val() || {}; 
+            document.getElementById('se-brk').value = data.breakfast || "OFF"; 
+            document.getElementById('se-lun').value = data.lunch || "OFF"; 
+            document.getElementById('se-din').value = data.dinner || "OFF"; 
+            document.getElementById('se-g-brk').value = data.guest_breakfast || 0; 
+            document.getElementById('se-g-lun').value = data.guest_lunch || 0; 
+            document.getElementById('se-g-din').value = data.guest_dinner || 0; 
+            document.getElementById('pastMealData').classList.remove('hidden'); 
+        }); 
+    }
+    
+    window.saveSuperMeal = () => { 
+        const dt = document.getElementById('superEditDate').value; 
+        update(ref(db, `records/${dt.substring(0, 7)}/${dt}/${document.getElementById('superEditMealMem').value}`), { 
+            breakfast: document.getElementById('se-brk').value, 
+            lunch: document.getElementById('se-lun').value, 
+            dinner: document.getElementById('se-din').value, 
+            guest_breakfast: parseInt(document.getElementById('se-g-brk').value)||0, 
+            guest_lunch: parseInt(document.getElementById('se-g-lun').value)||0, 
+            guest_dinner: parseInt(document.getElementById('se-g-din').value)||0 
+        }).then(() => { 
+            alert("মিল ডাটা আপডেট হয়েছে!"); 
+            document.getElementById('pastMealData').classList.add('hidden'); 
+        }); 
+    }
+    
+    // Reset Monthly Data Function
+    window.resetMonthlyData = () => {
+        const confirmation = confirm("আপনি কি নিশ্চিত? এই মাসের সমস্ত হিসাব (জমা, খরচ, মিল) চিরতরে মুছে যাবে এবং শূন্য হয়ে যাবে।\n\nআপনি কি আসলেই সব ডিলিট করতে চান?");
+        
+        if (confirmation) {
+            remove(ref(db, `records/${monthKey}`)).then(() => {
+                alert("চলতি মাসের সব হিসাব সফলভাবে শূন্য করা হয়েছে!");
+                document.getElementById('superEditType').value = "";
+                toggleSuperEdit();
+            }).catch((error) => {
+                alert("রিসেট করতে সমস্যা হয়েছে: " + error.message);
+            });
+        }
+    }
+    
+    window.addNewMember = () => { 
+        const n = document.getElementById('newMemName').value; 
+        if (n) {
+            set(ref(db, `records/memberConfig`), { 
+                ...memberNames, 
+                ["Member"+(members.length+1)]: n 
+            }).then(() => { 
+                alert("মেম্বার যুক্ত হয়েছে!"); 
+                document.getElementById('newMemName').value = ""; 
+            }); 
+        }
+    }
+    
+    function updateDropdowns() { 
+        let html = members.map(m => `<option value="${m}">${memberNames[m]}</option>`).join(''); 
+        ['loginUser', 'depMember', 'shopper1', 'superEditMem', 'superEditMealMem', 'dutyMem1', 'statementMemSelect'].forEach(id => { 
+            if (document.getElementById(id)) {
+                document.getElementById(id).innerHTML = html; 
+            }
+        }); 
+        if (document.getElementById('shopper2')) {
+            document.getElementById('shopper2').innerHTML = `<option value="">-- কেউ না --</option>` + html; 
+        }
+        if (document.getElementById('dutyMem2')) {
+            document.getElementById('dutyMem2').innerHTML = `<option value="">-- কেউ না --</option>` + html; 
+        }
+    }
+    
+    function renderSettingsList() { 
+        if (!document.getElementById('editMemList')) return; 
+        
+        document.getElementById('editMemList').innerHTML = members.map(m => `
+            <div style="display:flex; gap:10px; margin-bottom:10px; align-items:center; background:#f8fafc; padding:10px; border-radius:8px; border:1px solid #e2e8f0;">
+                <input type="text" id="edit-${m}" value="${memberNames[m]}" style="flex:1; margin:0; font-size:14px; padding:8px;">
+                <label style="font-size:12px; font-weight:bold; color:var(--text-muted); display:flex; align-items:center; gap:5px; cursor:pointer;">
+                    <input type="checkbox" id="exempt-${m}" ${memberExceptions[m] ? 'checked' : ''} style="width:16px; height:16px; margin:0; cursor:pointer;"> 
+                    নিয়ম ছাড়া
+                </label>
+            </div>
+        `).join(''); 
+    }
+    
+    window.saveMemberEdits = () => { 
+        let c = {}, e = {}; 
+        members.forEach(m => { 
+            c[m] = document.getElementById('edit-' + m).value; 
+            e[m] = document.getElementById('exempt-' + m).checked; 
+        }); 
+        update(ref(db, `records`), { 
+            'memberConfig': c, 
+            'memberExceptions': e 
+        }).then(() => alert("সেটিংস সেভ হয়েছে!")); 
+    }
+    
+    function checkTimeLock() { 
+        const h = new Date().getHours(); 
+        document.getElementById("btn-lunch").disabled = (h >= 10); 
+        document.getElementById("btn-dinner").disabled = (h >= 16); 
+    }
+    
+    get(ref(db, `records/memberConfig`)).then(snap => { 
+        const data = snap.val() || { "Member1": "অ্যাডমিন" }; 
+        memberNames = data; 
+        members = Object.keys(data); 
+        updateDropdowns(); 
+    });
+</script>
+
+</body>
+</html>
