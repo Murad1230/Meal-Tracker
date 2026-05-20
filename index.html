@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>আমাদের মেস - অ্যাডভান্সড ড্যাশবোর্ড</title>
     
-    <!-- FontAwesome, Chart.js & html2pdf & SweetAlert2 -->
+    <!-- Google Font & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -27,7 +28,7 @@
         }
 
         body {
-            font-family: 'Segoe UI', Roboto, -apple-system, sans-serif;
+            font-family: 'Hind Siliguri', 'Segoe UI', Roboto, -apple-system, sans-serif;
             background-color: var(--bg-body);
             margin: 0;
             color: var(--text-main);
@@ -51,7 +52,7 @@
             text-align: center;
         }
 
-        .login-card h2 { font-size: 22px; margin-bottom: 30px; color: var(--primary); }
+        .login-card h2 { font-size: 22px; margin-bottom: 30px; color: var(--primary); font-weight: 600; }
 
         .header {
             display: flex; justify-content: space-between; align-items: center; 
@@ -61,7 +62,7 @@
 
         .logout-btn {
             background: rgba(255,255,255,0.2); border: none; padding: 8px 15px; 
-            border-radius: 8px; color: white; cursor: pointer; font-weight: bold;
+            border-radius: 8px; color: white; cursor: pointer; font-weight: bold; font-family: 'Hind Siliguri', sans-serif;
         }
 
         .stats-grid { 
@@ -72,7 +73,20 @@
         .stat-card {
             background: var(--card-bg); padding: 20px; border-radius: var(--radius);
             box-shadow: var(--shadow); display: flex; align-items: center; gap: 15px; border-left: 5px solid var(--primary);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            cursor: pointer;
         }
+
+        .stat-card:hover {
+            transform: translateY(-6px) scale(1.02);
+            box-shadow: 0 10px 20px rgba(79, 70, 229, 0.12);
+        }
+
+        .stat-card.green:hover { box-shadow: 0 10px 20px rgba(16, 185, 129, 0.12); }
+        .stat-card.orange:hover { box-shadow: 0 10px 20px rgba(245, 158, 11, 0.12); }
+        .stat-card.red:hover { box-shadow: 0 10px 20px rgba(239, 68, 68, 0.12); }
+        .stat-card.purple:hover { box-shadow: 0 10px 20px rgba(168, 85, 247, 0.12); }
+        .stat-card.blue:hover { box-shadow: 0 10px 20px rgba(14, 165, 233, 0.12); }
 
         .stat-card.green { border-left-color: var(--success); }
         .stat-card.orange { border-left-color: var(--warning); }
@@ -83,11 +97,14 @@
         .stat-icon {
             width: 50px; height: 50px; background: #f1f5f9; border-radius: 12px;
             display: flex; align-items: center; justify-content: center; font-size: 20px; color: var(--primary);
-            flex-shrink: 0;
+            flex-shrink: 0; transition: transform 0.3s ease;
+        }
+        .stat-card:hover .stat-icon {
+            transform: rotate(10deg) scale(1.1);
         }
 
-        .stat-info h4 { margin: 0; color: var(--text-muted); font-size: 13px; text-transform: uppercase; }
-        .stat-info h2 { margin: 5px 0 0; font-size: 24px; }
+        .stat-info h4 { margin: 0; color: var(--text-muted); font-size: 13px; text-transform: uppercase; font-weight: 500; }
+        .stat-info h2 { margin: 5px 0 0; font-size: 24px; font-weight: 600; }
         .stat-info .meal-breakdown { font-size: 13px; color: var(--text-muted); margin-top: 4px; font-weight: 500;}
 
         /* Desktop Tabs */
@@ -96,96 +113,69 @@
         }
         .tab {
             flex: 1; padding: 10px; text-align: center; cursor: pointer; border-radius: 10px; 
-            font-weight: 600; color: var(--text-muted); transition: 0.3s; white-space: nowrap;
+            font-weight: 600; color: var(--text-muted); transition: 0.3s; white-space: nowrap; font-family: 'Hind Siliguri', sans-serif;
         }
         .tab.active { background: var(--card-bg); color: var(--primary); box-shadow: var(--shadow); }
 
         .content-card { background: var(--card-bg); padding: 25px; border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 20px; }
+        .content-card h3 { font-weight: 600; margin-top: 0; }
 
         .meal-row {
             display: flex; justify-content: space-between; align-items: center; padding: 15px;
             background: #f8fafc; margin-bottom: 10px; border-radius: 12px; border: 1px solid #e2e8f0;
         }
+        .meal-row span { font-weight: 500; }
 
-        .toggle-btn { border: none; padding: 10px 25px; border-radius: 25px; font-weight: bold; color: white; cursor: pointer; min-width: 90px; transition: 0.3s; }
+        .toggle-btn { border: none; padding: 10px 25px; border-radius: 25px; font-weight: bold; color: white; cursor: pointer; min-width: 90px; transition: 0.3s; font-family: 'Hind Siliguri', sans-serif; }
         .btn-on { background: var(--success); box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3); }
         .btn-off { background: var(--danger); box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3); }
 
         .table-container { overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th { background: #f8fafc; text-align: center; padding: 12px; color: var(--text-muted); font-size: 13px; border-bottom: 2px solid #e2e8f0; white-space: nowrap; }
+        th { background: #f8fafc; text-align: center; padding: 12px; color: var(--text-muted); font-size: 14px; border-bottom: 2px solid #e2e8f0; white-space: nowrap; font-weight: 600; }
         td { padding: 15px 12px; text-align: center; border-bottom: 1px solid #f1f5f9; font-size: 14px; white-space: nowrap; }
-        tr:hover { background: #fcfcfc; }
+        tr:hover { background: #f1f5f9; }
 
         input, select, textarea { 
             width: 100%; padding: 12px; border: 1.5px solid #e2e8f0; border-radius: 10px; 
-            margin-top: 5px; font-size: 15px; box-sizing: border-box; 
+            margin-top: 5px; font-size: 15px; box-sizing: border-box; font-family: 'Hind Siliguri', sans-serif;
         }
         input:focus, select:focus { outline: none; border-color: var(--primary); }
 
         .btn-save { 
             background: var(--primary); color: white; border: none; padding: 14px; width: 100%; 
-            border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 15px; transition: 0.2s; font-size: 15px;
+            border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 15px; transition: 0.2s; font-size: 16px; font-family: 'Hind Siliguri', sans-serif;
         }
-        .btn-pdf { background: #dc2626; color: white; padding: 12px 20px; font-size: 14px; margin-top: 20px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; }
+        .btn-pdf { background: #dc2626; color: white; padding: 12px 20px; font-size: 15px; margin-top: 20px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; font-family: 'Hind Siliguri', sans-serif; }
 
         .hidden { display: none !important; }
         .rule-box { background: #f8fafc; border: 1px solid #cbd5e1; padding: 15px; border-radius: 10px; margin-bottom: 10px; }
+        .rule-box label { font-weight: 600; }
         .rule-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; align-items: center; margin-top: 8px;}
         .duty-box { background: #e0e7ff; border-left: 5px solid #4f46e5; padding: 15px; border-radius: 8px; margin-bottom: 20px; display: flex; align-items: center; gap: 15px;}
+        .duty-box h4 { font-weight: 600; }
         .duty-icon { font-size: 30px; color: #4f46e5; }
 
-        /* ========================================================= */
-        /* মোবাইল অ্যাপ স্টাইল (রেস্পন্সিভ ডিজাইন) */
-        /* ========================================================= */
         @media (max-width: 768px) {
-            body { 
-                padding-bottom: 90px; /* নিচের ট্যাবের জন্য জায়গা */
-            }
-            .container { 
-                width: 100%; margin: 10px auto; padding: 0 10px; 
-            }
-            .header {
-                padding: 12px 15px; border-radius: 12px; margin-bottom: 15px;
-            }
-            .header h2 { font-size: 16px; margin: 0; }
+            body { padding-bottom: 90px; }
+            .container { width: 100%; margin: 10px auto; padding: 0 10px; }
+            .header { padding: 12px 15px; border-radius: 12px; margin-bottom: 15px; }
+            .header h2 { font-size: 16px; margin: 0; font-weight: 600; }
             .logout-btn { padding: 6px 12px; font-size: 12px; }
-
-            .stats-grid { 
-                grid-template-columns: 1fr 1fr; /* ২ কলামে দেখাবে */
-                gap: 10px;
-            }
-            #balanceCard, #myMealsCard { grid-column: span 2; } /* ব্যালেন্স কার্ড পুরো জায়গা নিবে */
-            
+            .stats-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+            #balanceCard, #myMealsCard { grid-column: span 2; }
             .stat-card { padding: 15px; gap: 10px; border-radius: 12px; }
+            .stat-card:hover { transform: none; box-shadow: var(--shadow); } 
             .stat-icon { width: 40px; height: 40px; font-size: 16px; }
-            .stat-info h4 { font-size: 11px; }
             .stat-info h2 { font-size: 18px; }
-            .stat-info .meal-breakdown { font-size: 11px; }
-
             .content-card { padding: 15px; border-radius: 12px; margin-bottom: 15px; }
-
-            /* Bottom App Navigation Bar */
-            .tabs {
-                position: fixed; bottom: 0; left: 0; width: 100%;
-                background: #ffffff; margin: 0; padding: 8px 5px; 
-                border-radius: 0; border-top: 1px solid #e2e8f0;
-                box-shadow: 0 -4px 15px rgba(0,0,0,0.08); z-index: 1000;
-                display: flex; justify-content: space-around;
-            }
-            .tab {
-                flex-direction: column; display: flex; align-items: center; justify-content: center;
-                padding: 5px; font-size: 10px; gap: 5px; background: transparent; border-radius: 8px;
-            }
-            .tab.active {
-                background: #eef2ff; color: var(--primary); box-shadow: none;
-            }
-            .tab i { font-size: 20px; }
-
+            .tabs { position: fixed; bottom: 0; left: 0; width: 100%; background: #ffffff; margin: 0; padding: 8px 5px; border-radius: 0; border-top: 1px solid #e2e8f0; box-shadow: 0 -4px 15px rgba(0,0,0,0.08); z-index: 1000; display: flex; justify-content: space-around; }
+            .tab { flex-direction: column; display: flex; align-items: center; justify-content: center; padding: 5px; font-size: 11px; gap: 3px; background: transparent; border-radius: 8px; }
+            .tab.active { background: #eef2ff; color: var(--primary); box-shadow: none; }
+            .tab i { font-size: 18px; }
             .meal-row { padding: 12px; }
             .toggle-btn { padding: 8px 20px; font-size: 13px; }
             .rule-grid { grid-template-columns: 1fr; gap: 10px; }
-            
             th, td { padding: 10px 8px; font-size: 13px; }
         }
     </style>
@@ -197,10 +187,10 @@
     <div id="loginScreen" class="login-card">
         <h2><i class="fas fa-utensils"></i> মেস লগইন</h2>
         <div style="text-align: left;">
-            <label>ইউজার সিলেক্ট করুন</label>
+            <label style="font-weight: 500;">ইউজার সিলেক্ট করুন</label>
             <select id="loginUser"></select><br><br>
-            <label>পিন কোড</label>
-            <input type="password" id="userPin" placeholder="পিন টাইপ করুন..." maxlength="4">
+            <label style="font-weight: 500;">পিন কোড</label>
+            <input type="password" id="userPin" placeholder="পিন টাইপ করুন..." maxlength="4" style="text-align: center; letter-spacing: 5px; font-family: monospace; font-size: 18px;">
         </div>
         <button class="btn-save" id="loginBtn">লগইন করুন</button>
     </div>
@@ -255,10 +245,11 @@
             </div>
         </div>
 
-        <!-- TABS (Will stick to bottom on mobile) -->
+        <!-- TABS (সহজে ব্যবহারযোগ্য বটম নেভিগেশন বার) -->
         <div class="tabs" id="mainTabs">
             <div class="tab active" onclick="switchTab('dashboard')"><i class="fas fa-home"></i> হোম</div>
             <div class="tab" onclick="switchTab('statement')"><i class="fas fa-receipt"></i> আমার হিসাব</div>
+            <div class="tab" onclick="switchTab('dutylist')"><i class="fas fa-calendar-alt"></i> বাজার লিস্ট</div> <!-- নতুন অপশন যুক্ত করা হয়েছে -->
             <div class="tab" onclick="switchTab('history')"><i class="fas fa-history"></i> ইতিহাস</div>
             <div id="managerTabBtn" class="tab hidden" onclick="switchTab('manager')"><i class="fas fa-tasks"></i> ম্যানেজমেন্ট</div>
             <div id="settingsTabBtn" class="tab hidden" onclick="switchTab('settings')"><i class="fas fa-cog"></i> সেটিংস</div>
@@ -269,7 +260,7 @@
             <div class="duty-box" id="dutyDisplayBox" style="display:none;">
                 <div class="duty-icon"><i class="fas fa-shopping-basket"></i></div>
                 <div>
-                    <h4 style="margin:0; color:#1e293b; font-size:16px;">আজকের বাজারের দায়িত্ব</h4>
+                    <h4 style="margin:0; color:#1e293b; font-size:16px;">আজকের বাজারের দায়িত্ব</h4>
                     <p id="dutyText" style="margin:5px 0 0; color:#4f46e5; font-weight:bold;"></p>
                 </div>
             </div>
@@ -298,7 +289,7 @@
                     <span>🌙 রাত</span><button id="btn-dinner" onclick="toggleMeal('dinner')" class="toggle-btn btn-on">ON</button>
                 </div>
                 
-                <h3 style="margin-top: 25px;"><i class="fas fa-user-plus"></i> অ্যাডভান্সড গেস্ট মিল</h3>
+                <h3 style="margin-top: 25px;"><i class="fas fa-user-plus"></i> Advanced গেস্ট মিল</h3>
                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
                     <div><select id="guestTime"><option value="breakfast">সকাল</option><option value="lunch" selected>দুপুর</option><option value="dinner">রাত</option></select></div>
                     <div><input type="number" id="guestCountInput" placeholder="সংখ্যা" min="0" value="0"></div>
@@ -308,10 +299,18 @@
                 </button>
             </div>
 
+            <div class="content-card" id="memberPinChangeBox" style="border-left: 5px solid var(--primary);">
+                <h3><i class="fas fa-key"></i> নিজের লগইন পিন পরিবর্তন করুন</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <input type="password" id="oldUserPin" placeholder="পুরাতন পিন (৪ সংখ্যা)" maxlength="4" style="text-align:center;">
+                    <input type="password" id="newUserPin" placeholder="নতুন পিন (৪ সংখ্যা)" maxlength="4" style="text-align:center;">
+                </div>
+                <button onclick="changeOwnPin()" class="btn-save" style="margin-top:10px;"><i class="fas fa-save"></i> পিন কোড আপডেট করুন</button>
+            </div>
+
             <div class="content-card" id="ledgerPrintArea">
                 <h2 style="text-align:center; color:var(--primary); margin-bottom:5px; display:none;" id="pdfTitle">আমাদের মেস - মাসিক রিপোর্ট</h2>
                 <p style="text-align:center; font-size:13px; color:gray; display:none; margin-top:0;" id="pdfDate"></p>
-                
                 <h3><i class="fas fa-list-alt"></i> মেস লেজার রিপোর্ট</h3>
                 <div class="table-container">
                     <table>
@@ -333,13 +332,35 @@
             <div class="content-card">
                 <h3><i class="fas fa-receipt"></i> বিস্তারিত মাসিক হিসাব</h3>
                 <div id="managerStatementSelector" class="hidden" style="margin-bottom:15px; background:#f8fafc; padding:10px; border-radius:8px;">
-                    <label style="font-size:12px; font-weight:bold;">মেম্বার সিলেক্ট করুন:</label>
+                    <label style="font-size:13px; font-weight:bold;">মেম্বার সিলেক্ট করুন:</label>
                     <select id="statementMemSelect" onchange="renderStatementTable()"></select>
                 </div>
                 <div class="table-container">
                     <table>
                         <thead><tr><th>তারিখ</th><th>সকাল</th><th>দুপুর</th><th>রাত</th><th>গেস্ট</th><th>জমা (৳)</th></tr></thead>
                         <tbody id="statementTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- NEW BAZAAR DUTY ROUTINE LIST TAB (সব মেম্বারদের দেখার জন্য অপশন) -->
+        <div id="sec-dutylist" class="hidden">
+            <div class="content-card" style="border-top: 4px solid var(--secondary);">
+                <h3><i class="fas fa-calendar-alt"></i> মেসের আপকামিং বাজার ডিউটি রুটিন</h3>
+                <p style="font-size:14px; color:var(--text-muted); margin-bottom:15px;">ম্যানেজারের সেট করা সকল ডিউটির তারিখ ও তালিকা নিচে সাজানো রয়েছে:</p>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ডিউটির তারিখ</th>
+                                <th>প্রধান বাজারী (১)</th>
+                                <th>সহকারী বাজারী (২)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bazaarDutyRoutineTableBody">
+                            <tr><td colspan="3" style="text-align:center; color:gray;">কোনো ডিউটি রুটিন পাওয়া যায়নি</td></tr>
+                        </tbody>
                     </table>
                 </div>
             </div>
@@ -354,7 +375,6 @@
 
         <!-- MANAGER TAB -->
         <div id="sec-manager" class="hidden">
-            
             <div class="content-card" style="border-left: 5px solid #0ea5e9;">
                 <h3><i class="fas fa-calendar-alt"></i> বাজারের ডিউটি সেট করুন</h3>
                 <input type="date" id="dutyDate">
@@ -366,18 +386,18 @@
             </div>
 
             <div class="content-card" style="border-left: 5px solid var(--primary);">
-                <h3><i class="fas fa-balance-scale"></i> এই মাসের মিল নিয়ম (Rules)</h3>
+                <h3><i class="fas fa-balance-scale"></i> এই মাসের মিল नियम (Rules)</h3>
                 <div class="rule-box"><label>শর্ত ১: লো-মিল পেনাল্টি</label><div class="rule-grid"><div><input type="number" id="ruleT1" placeholder="উদা: ৫" min="0"><small>এর কম খেলে</small></div><div><input type="number" id="ruleP1" placeholder="উদা: ২০" min="0"><small>টি বিল হবে</small></div></div></div>
                 <div class="rule-box"><label>শর্ত ২: বেস মিল চার্জ</label><div class="rule-grid"><div><input type="number" id="ruleT2" placeholder="উদা: ৫০" min="0"><small>এর কম খেলে</small></div><div><input type="number" id="ruleP2" placeholder="উদা: ৫০" min="0"><small>টি বিল হবে</small></div></div></div>
-                <button class="btn-save" onclick="saveRules()"><i class="fas fa-save"></i> নিয়ম সেভ করুন</button>
+                <button class="btn-save" onclick="saveRules()"><i class="fas fa-save"></i> नियम সেভ করুন</button>
             </div>
 
             <!-- Super Edit & Reset-->
             <div class="content-card" style="border-left: 5px solid var(--danger); background: #fef2f2;">
-                <h3 style="color: var(--danger); margin-top:0;"><i class="fas fa-bolt"></i> সুপার অ্যাডমিন পাওয়ার</h3>
+                <h3 style="color: var(--danger); margin-top:0;"><i class="fas fa-bolt"></i> সুপার অ্যাডমিন পাওয়ার</h3>
                 <select id="superEditType" onchange="toggleSuperEdit()">
                     <option value="">-- নির্বাচন করুন --</option>
-                    <option value="edit-cost">১. মেসের মোট খরচ এডিট</option>
+                    <option value="edit-cost">১. মেসের মোট খরচ एডিট</option>
                     <option value="edit-deposit">২. মেম্বারের মোট জমার পরিমাণ এডিট</option>
                     <option value="edit-meal">৩. যেকোনো দিনের মিল/গেস্ট মিল এডিট</option>
                     <option value="edit-reset" style="color:red; font-weight:bold;">৪. চলতি মাসের সব ডাটা রিসেট করুন</option>
@@ -438,7 +458,7 @@
                 <button class="btn-save" onclick="addNewMember()">যোগ করুন</button>
             </div>
             <div class="content-card">
-                <h3><i class="fas fa-user-edit"></i> মেম্বার নাম ও ছাড় এডিট</h3>
+                <h3><i class="fas fa-user-edit"></i> মেম্বার নাম, ছাড় ও পিন (Password) এডিট</h3>
                 <div id="editMemList"></div>
                 <button class="btn-save" onclick="saveMemberEdits()">সব সেভ করুন</button>
             </div>
@@ -470,6 +490,7 @@
     let members = [];
     let memberNames = {};
     let memberExceptions = {};
+    let memberPins = {}; 
     let messRules = { t1: 5, p1: 20, t2: 50, p2: 50 };
     let currentUser = "";
     let isManager = false;
@@ -496,8 +517,13 @@
         const user = document.getElementById('loginUser').value;
         const pin = document.getElementById('userPin').value;
         if (pin === "0000") { isManager = true; showDashboard(); } 
-        else if (pin === "1234") { currentUser = user; isManager = false; showDashboard(); } 
-        else { showError("ভুল পিন দিয়েছেন!"); }
+        else {
+            get(ref(db, `records/memberPins/${user}`)).then(snap => {
+                const savedPin = snap.val() || "1234";
+                if (pin === savedPin) { currentUser = user; isManager = false; showDashboard(); } 
+                else { showError("ভুল পিন দিয়েছেন!"); }
+            });
+        }
     }
 
     function showDashboard() {
@@ -509,10 +535,12 @@
             document.getElementById('managerStatementSelector').classList.remove('hidden');
             document.getElementById('welcomeText').innerHTML = `<i class="fas fa-user-shield"></i> মেস ম্যানেজার প্যানেল`;
             document.getElementById('myMealsCard').style.display = 'none';
+            document.getElementById('memberPinChangeBox').classList.add('hidden'); 
         } else {
             document.getElementById('welcomeText').innerHTML = `<i class="fas fa-user"></i> ${memberNames[currentUser]}`;
             document.getElementById('myMealsCard').style.display = 'flex';
             document.getElementById('statementMemSelect').value = currentUser;
+            document.getElementById('memberPinChangeBox').classList.remove('hidden');
         }
         checkTimeLock();
         startRealtimeSync();
@@ -521,12 +549,12 @@
     window.switchTab = (tabId) => {
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
         event.currentTarget.classList.add('active');
-        ['sec-dashboard', 'sec-statement', 'sec-history', 'sec-manager', 'sec-settings'].forEach(id => {
-            document.getElementById(id).classList.add('hidden');
+        ['sec-dashboard', 'sec-statement', 'sec-dutylist', 'sec-history', 'sec-manager', 'sec-settings'].forEach(id => {
+            if(document.getElementById(id)) document.getElementById(id).classList.add('hidden');
         });
         document.getElementById('sec-' + tabId).classList.remove('hidden');
         if (tabId === 'statement') renderStatementTable();
-        window.scrollTo(0,0); // স্ক্রল করে উপরে নেওয়া
+        window.scrollTo(0,0); 
     }
 
     window.toggleEntryFields = () => {
@@ -586,21 +614,69 @@
         document.getElementById('statementTableBody').innerHTML = html || "<tr><td colspan='6'>কোনো হিসাব নেই</td></tr>";
     }
 
+    window.changeOwnPin = () => {
+        const oldPin = document.getElementById('oldUserPin').value;
+        const newPin = document.getElementById('newUserPin').value;
+        if(oldPin.length !== 4 || newPin.length !== 4) return showError("পিন অবশ্যই ৪ সংখ্যার হতে হবে!");
+        
+        get(ref(db, `records/memberPins/${currentUser}`)).then(snap => {
+            const currentPin = snap.val() || "1234";
+            if(oldPin !== currentPin) return showError("পুরাতন পিন কোডটি সঠিক নয়!");
+            
+            set(ref(db, `records/memberPins/${currentUser}`), newPin).then(() => {
+                document.getElementById('oldUserPin').value = "";
+                document.getElementById('newUserPin').value = "";
+                showSuccess("আপনার লগইন পিন সফলভাবে পরিবর্তিত হয়েছে!");
+            });
+        });
+    }
+
     function startRealtimeSync() {
         onValue(ref(db, `records/memberConfig`), (snap) => { memberNames = snap.val() || {}; members = Object.keys(memberNames); updateDropdowns(); renderSettingsList(); });
         onValue(ref(db, `records/memberExceptions`), snap => { memberExceptions = snap.val() || {}; renderSettingsList(); });
+        onValue(ref(db, `records/memberPins`), snap => { memberPins = snap.val() || {}; renderSettingsList(); }); 
         onValue(ref(db, `records/${monthKey}/messRules`), snap => { 
             if (snap.val()) messRules = snap.val(); 
             if (isManager) { document.getElementById('ruleT1').value = messRules.t1; document.getElementById('ruleP1').value = messRules.p1; document.getElementById('ruleT2').value = messRules.t2; document.getElementById('ruleP2').value = messRules.p2; } 
         });
         onValue(ref(db, `records/${monthKey}/noticeBoard`), snap => document.getElementById('noticeText').innerText = snap.val() || "কোনো নোটিশ নেই।");
-        onValue(ref(db, `records/bazaarDuty/${dateKey}`), snap => {
+        
+        // আজকের হোম স্ক্রিন ডিউটি লিসনার
+        onValue(ref(db, `records/bazaarDuty/${dateKey}`), (snap) => {
             const duty = snap.val();
             if (duty && duty.s1) {
-                let txt = memberNames[duty.s1]; if (duty.s2) txt += ` এবং ${memberNames[duty.s2]}`;
-                document.getElementById('dutyText').innerText = txt; document.getElementById('dutyDisplayBox').style.display = 'flex';
-            } else { document.getElementById('dutyDisplayBox').style.display = 'none'; }
+                let txt = memberNames[duty.s1] || ''; 
+                if (duty.s2) txt += ` এবং ${memberNames[duty.s2] || ''}`;
+                document.getElementById('dutyText').innerText = txt; 
+                document.getElementById('dutyDisplayBox').style.display = 'flex';
+            } else { 
+                document.getElementById('dutyDisplayBox').style.display = 'none'; 
+            }
         });
+
+        // পুরো মাসের সম্পূর্ণ "বাজার ডিউটি লিস্ট রুটিন" সিঙ্ক (নতুন ফিচারের জন্য রিয়েল-টাইম ট্র্যাকিং)
+        onValue(ref(db, `records/bazaarDuty`), (snap) => {
+            const allDuties = snap.val() || {};
+            let html = "";
+            const sortedDates = Object.keys(allDuties).sort((a, b) => b.localeCompare(a)); // নতুন ডেট উপরে দেখাবে
+            
+            sortedDates.forEach(date => {
+                const duty = allDuties[date];
+                if (duty && duty.s1) {
+                    const formattedDate = date.split('-').reverse().join('/');
+                    const primaryShopper = memberNames[duty.s1] || 'অজানা';
+                    const secondaryShopper = duty.s2 ? (memberNames[duty.s2] || 'কেউ না') : 'কেউ না';
+                    
+                    html += `<tr>
+                        <td style="font-weight:bold; color:var(--primary);">${formattedDate}</td>
+                        <td><i class="fas fa-user" style="color:var(--success); margin-right:5px;"></i>${primaryShopper}</td>
+                        <td><i class="fas fa-user-friends" style="color:var(--text-muted); margin-right:5px;"></i>${secondaryShopper}</td>
+                    </tr>`;
+                }
+            });
+            document.getElementById('bazaarDutyRoutineTableBody').innerHTML = html || `<tr><td colspan="3" style="text-align:center; color:gray;">কোনো ডিউটি রুটিন পাওয়া যায়নি</td></tr>`;
+        });
+
         syncLedger();
     }
 
@@ -653,7 +729,7 @@
                 let actualTotal = mOwnMeals[m] + mGuest[m]; let billedTotal = mBilledMeals[m];
                 const mealCost = billedTotal * rate; const finalTotalCost = mealCost + perMemberFixedShare; const bal = mDeposit[m] - finalTotalCost; totalAllDeposit += mDeposit[m];
                 let displayMeals = actualTotal === billedTotal ? `<b>${actualTotal.toFixed(1)}</b>` : `${actualTotal.toFixed(1)}<br><small style="color:var(--danger); font-weight:bold">(বিল: ${billedTotal.toFixed(1)})</small>`;
-                ledgerHtml += `<tr><td><strong>${memberNames[m]}</strong>${memberExceptions[m] ? '<br><small style="color:var(--success)">[ছাড়প্রাপ্ত]</small>' : ''}</td><td>${displayMeals}</td><td>৳ ${mealCost.toFixed(1)}</td><td style="color:#a855f7; font-weight:bold">৳ ${perMemberFixedShare.toFixed(1)}</td><td>৳ ${mDeposit[m]}</td><td style="color:${bal >= 0 ? '#10b981' : '#ef4444'}"><b>${bal.toFixed(1)}</b></td></tr>`;
+                ledgerHtml += `<tr><td><strong>${memberNames[m]}</strong>${memberExceptions[m] ? '<br><small style="color:var(--success)">[ছড়প্রাপ্ত]</small>' : ''}</td><td>${displayMeals}</td><td>৳ ${mealCost.toFixed(1)}</td><td style="color:#a855f7; font-weight:bold">৳ ${perMemberFixedShare.toFixed(1)}</td><td>৳ ${mDeposit[m]}</td><td style="color:${bal >= 0 ? '#10b981' : '#ef4444'}"><b>${bal.toFixed(1)}</b></td></tr>`;
             });
             document.getElementById('ledgerTableBody').innerHTML = ledgerHtml; document.getElementById('liveCash').innerText = totalAllDeposit - (mealOnlyExpenses + fixedBazaar);
 
@@ -697,7 +773,7 @@
         update(ref(db, `records/${monthKey}/messRules`), { 
             t1: parseFloat(document.getElementById('ruleT1').value)||0, p1: parseFloat(document.getElementById('ruleP1').value)||0, 
             t2: parseFloat(document.getElementById('ruleT2').value)||0, p2: parseFloat(document.getElementById('ruleP2').value)||0 
-        }).then(() => showSuccess("মিলের নিয়ম সেভ হয়েছে!"));
+        }).then(() => showSuccess("মিলের নিয়ম সেভ হয়েছে!"));
     }
     
     window.updateNotice = () => set(ref(db, `records/${monthKey}/noticeBoard`), document.getElementById('mgrNotice').value).then(() => showSuccess("নোটিশ আপডেট হয়েছে!"));
@@ -705,14 +781,14 @@
     window.saveBazaarDuty = () => { 
         const d = document.getElementById('dutyDate').value; const s1 = document.getElementById('dutyMem1').value; const s2 = document.getElementById('dutyMem2').value; 
         if (!d || !s1) return showWarning("তারিখ এবং অন্তত একজন বাজারী সিলেক্ট করুন!"); 
-        set(ref(db, `records/bazaarDuty/${d}`), { s1, s2 }).then(() => showSuccess("বাজারের ডিউটি সেভ হয়েছে!")); 
+        set(ref(db, `records/bazaarDuty/${d}`), { s1, s2 }).then(() => showSuccess("বাজারের ডিউটি সফলভাবে সেট করা হয়েছে!")); 
     }
     
     window.saveEntry = () => {
         const type = document.getElementById('entryType').value;
         if (type === 'deposit') {
             const m = document.getElementById('depMember').value; const amt = parseFloat(document.getElementById('depAmount').value); if (!amt) return showWarning("সঠিক জমার পরিমাণ বসান!");
-            get(ref(db, `records/${monthKey}/${dateKey}/${m}/deposit`)).then(snap => { update(ref(db, `records/${monthKey}/${dateKey}/${m}`), { deposit: (parseFloat(snap.val())||0) + amt }).then(() => { document.getElementById('depAmount').value = ""; showSuccess("জমা সফলভাবে এন্ট্রি হয়েছে!"); }); });
+            get(ref(db, `records/${monthKey}/${dateKey}/${m}/deposit`)).then(snap => { update(ref(db, `records/${monthKey}/${dateKey}/${m}`), { deposit: (parseFloat(snap.val())||0) + amt }).then(() => { document.getElementById('depAmount').value = ""; showSuccess("জমা সফলভাবে এন্ট্রি হয়েছে!"); }); });
         } else if (type === 'bazaar') {
             const s1 = document.getElementById('shopper1').value; const s2 = document.getElementById('shopper2').value; const amt = parseFloat(document.getElementById('bazAmount').value); if (!amt) return showWarning("সঠিক ডাটা দিন!");
             get(ref(db, `records/${monthKey}/totalBazaarCost`)).then(snap => { update(ref(db, `records/${monthKey}`), { totalBazaarCost: (parseFloat(snap.val())||0) + amt }); set(ref(db, `records/${monthKey}/bazaarHistory/${Date.now()}`), { date: dateKey, type: 'regular', shopper1: s1, shopper2: s2, amount: amt }).then(() => { document.getElementById('bazAmount').value = ""; showSuccess("বাজার সেভ হয়েছে!"); }); });
@@ -738,14 +814,14 @@
         if (document.getElementById('newBazTot').value) u.totalBazaarCost = parseFloat(document.getElementById('newBazTot').value); 
         if (document.getElementById('newRicTot').value) u.totalRiceCost = parseFloat(document.getElementById('newRicTot').value); 
         if (document.getElementById('newFixTot').value) u.totalFixedCost = parseFloat(document.getElementById('newFixTot').value); 
-        if (Object.keys(u).length > 0) { update(ref(db, `records/${monthKey}`), u).then(() => { showSuccess("খরচ আপডেট হয়েছে!"); toggleSuperEdit(); }); }
+        if (Object.keys(u).length > 0) { update(ref(db, `records/${monthKey}`), u).then(() => { showSuccess("খরচ আপডেট হয়েছে!"); toggleSuperEdit(); }); }
     }
     
     window.saveSuperDeposit = () => { 
         const m = document.getElementById('superEditMem').value; const n = parseFloat(document.getElementById('newDepTot').value); 
         if (isNaN(n)) return showWarning("সঠিক জমার পরিমাণ বসান!"); 
         const d = n - (globalDeposits[m] || 0); 
-        if (d !== 0) { get(ref(db, `records/${monthKey}/${dateKey}/${m}/deposit`)).then(snap => { update(ref(db, `records/${monthKey}/${dateKey}/${m}`), { deposit: (parseFloat(snap.val())||0) + d }).then(() => { showSuccess("জমা আপডেট হয়েছে!"); setTimeout(loadCurrentDeposit, 500); }); }); }
+        if (d !== 0) { get(ref(db, `records/${monthKey}/${dateKey}/${m}/deposit`)).then(snap => { update(ref(db, `records/${monthKey}/${dateKey}/${m}`), { deposit: (parseFloat(snap.val())||0) + d }).then(() => { showSuccess("জমা আপডেট হয়েছে!"); setTimeout(loadCurrentDeposit, 500); }); }); }
         else { showWarning("নতুন জমা বর্তমান জমার সমান!"); }
     }
     
@@ -759,13 +835,13 @@
     
     window.saveSuperMeal = () => { 
         const dt = document.getElementById('superEditDate').value; 
-        update(ref(db, `records/${dt.substring(0, 7)}/${dt}/${document.getElementById('superEditMealMem').value}`), { breakfast: document.getElementById('se-brk').value, lunch: document.getElementById('se-lun').value, dinner: document.getElementById('se-din').value, guest_breakfast: parseInt(document.getElementById('se-g-brk').value)||0, guest_lunch: parseInt(document.getElementById('se-g-lun').value)||0, guest_dinner: parseInt(document.getElementById('se-g-din').value)||0 }).then(() => { showSuccess("মিল ডাটা আপডেট হয়েছে!"); document.getElementById('pastMealData').classList.add('hidden'); }); 
+        update(ref(db, `records/${dt.substring(0, 7)}/${dt}/${document.getElementById('superEditMealMem').value}`), { breakfast: document.getElementById('se-brk').value, lunch: document.getElementById('se-lun').value, dinner: document.getElementById('se-din').value, guest_breakfast: parseInt(document.getElementById('se-g-brk').value)||0, guest_lunch: parseInt(document.getElementById('se-g-lun').value)||0, guest_dinner: parseInt(document.getElementById('se-g-din').value)||0 }).then(() => { showSuccess("মিল ডাটা আপডেট হয়েছে!"); document.getElementById('pastMealData').classList.add('hidden'); }); 
     }
     
     window.resetMonthlyData = () => {
         Swal.fire({
             title: 'আপনি কি নিশ্চিত?',
-            text: "এই মাসের সমস্ত হিসাব (জমা, খরচ, মিল) চিরতরে মুছে যাবে এবং শূন্য হয়ে যাবে!",
+            text: "এই মাসের সমস্ত হিসাব (জমা, খরচ, mil) চিরতরে মুছে যাবে এবং শূন্য হয়ে যাবে!",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33',
@@ -775,10 +851,10 @@
         }).then((result) => {
             if (result.isConfirmed) {
                 remove(ref(db, `records/${monthKey}`)).then(() => {
-                    Swal.fire('রিসেট সম্পন্ন!', 'চলতি মাসের সব হিসাব শূন্য করা হয়েছে।', 'success');
+                    Swal.fire('রিসেট সম্পন্ন!', 'চলতি মাসের সব হিসাব শূন্য করা হয়েছে।', 'success');
                     document.getElementById('superEditType').value = ""; toggleSuperEdit();
                 }).catch((error) => {
-                    showError("রিসেট করতে সমস্যা হয়েছে: " + error.message);
+                    showError("রিসেট করতে সমস্যা হয়েছে: " + error.message);
                 });
             }
         });
@@ -798,12 +874,24 @@
     
     function renderSettingsList() { 
         if (!document.getElementById('editMemList')) return; 
-        document.getElementById('editMemList').innerHTML = members.map(m => `<div style="display:flex; gap:10px; margin-bottom:10px; align-items:center; background:#f8fafc; padding:10px; border-radius:8px; border:1px solid #e2e8f0;"><input type="text" id="edit-${m}" value="${memberNames[m]}" style="flex:1; margin:0; font-size:14px; padding:8px;"><label style="font-size:12px; font-weight:bold; color:var(--text-muted); display:flex; align-items:center; gap:5px; cursor:pointer;"><input type="checkbox" id="exempt-${m}" ${memberExceptions[m] ? 'checked' : ''} style="width:16px; height:16px; margin:0; cursor:pointer;"> নিয়ম ছাড়া</label></div>`).join(''); 
+        document.getElementById('editMemList').innerHTML = members.map(m => `
+            <div style="background:#f8fafc; padding:15px; border-radius:12px; border:1px solid #e2e8f0; margin-bottom:15px;">
+                <label style="font-size:12px; font-weight:600; color:var(--text-muted);">মেম্বার নাম</label>
+                <input type="text" id="edit-${m}" value="${memberNames[m]}" style="margin-bottom:10px; padding:8px;">
+                
+                <label style="font-size:12px; font-weight:600; color:var(--text-muted);">লগইন পিন (৪ সংখ্যার)</label>
+                <input type="password" id="pin-${m}" value="${memberPins[m] || '1234'}" maxlength="4" placeholder="পিন কোড" style="margin-bottom:10px; padding:8px; font-family:monospace; text-align:center; letter-spacing:3px;">
+                
+                <label style="font-size:14px; font-weight:600; color:var(--text-main); display:flex; align-items:center; gap:5px; cursor:pointer; margin-top:5px;">
+                    <input type="checkbox" id="exempt-${m}" ${memberExceptions[m] ? 'checked' : ''} style="width:16px; height:16px; margin:0; cursor:pointer;"> नियम ছাড়া (পেনাল্টি মুক্ত)
+                </label>
+            </div>
+        `).join(''); 
     }
     
     window.saveMemberEdits = () => { 
-        let c = {}, e = {}; members.forEach(m => { c[m] = document.getElementById('edit-' + m).value; e[m] = document.getElementById('exempt-' + m).checked; }); 
-        update(ref(db, `records`), { 'memberConfig': c, 'memberExceptions': e }).then(() => showSuccess("সেটিংস সেভ হয়েছে!")); 
+        let c = {}, e = {}, p = {}; members.forEach(m => { c[m] = document.getElementById('edit-' + m).value; e[m] = document.getElementById('exempt-' + m).checked; p[m] = document.getElementById('pin-' + m).value || "1234"; }); 
+        update(ref(db, `records`), { 'memberConfig': c, 'memberExceptions': e, 'memberPins': p }).then(() => showSuccess("সেটিংস সফলভাবে সেভ হয়েছে!")); 
     }
     
     function checkTimeLock() { const h = new Date().getHours(); document.getElementById("btn-lunch").disabled = (h >= 10); document.getElementById("btn-dinner").disabled = (h >= 16); }
