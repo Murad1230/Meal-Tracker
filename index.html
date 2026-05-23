@@ -13,6 +13,8 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     <style>
+
+        
         :root {
             --primary: #4f46e5;
             --secondary: #6366f1;
@@ -828,7 +830,7 @@
             const tData = snap.val() || {};
             ['breakfast', 'lunch', 'dinner'].forEach(type => {
                 const btn = document.getElementById('btn-' + type);
-                const state = tData[type] || "ON";
+                const state = tData[type] || "OFF"; // এখন থেকে নতুন তারিখ সিলেক্ট করলে ডিফল্ট অফ থাকবে
                 btn.innerText = state;
                 btn.className = `toggle-btn ${state === "ON" ? "btn-on" : "btn-off"}`;
             });
@@ -1124,17 +1126,37 @@
         if(!selectedDate) return showWarning("অনুগ্রহ করে একটি সঠিক তারিখ নির্বাচন করুন!");
 
         if(isMealLocked(type, selectedDate)) {
-            return showError("দুঃখিত! এই মিল পরিবর্তনের সুনির্দিষ্ট সময় (Deadline) পার হয়ে গেছে।");
+            return showError("দুঃখিত! এই মিল পরিবর্তনের সুনির্দিষ্ট সময় (Deadline) পার হয়ে গেছে।");
         }
 
-        const targetMonthKey = selectedDate.substring(0, 7);
         const btn = document.getElementById('btn-' + type); 
         const newState = btn.innerText === "ON" ? "OFF" : "ON";
 
-        update(ref(db, `records/${targetMonthKey}/${selectedDate}/${currentUser}`), { [type]: newState }).then(() => {
+        // নির্বাচিত তারিখ থেকে মাসের শেষ দিন পর্যন্ত একসাথে আপডেট করার স্মার্ট লজিক
+        const parts = selectedDate.split('-');
+        const year = parseInt(parts[0]);
+        const month = parseInt(parts[1]) - 1; // জাভাস্ক্রিপ্টে মাস ০ থেকে শুরু হয়
+        const startDay = parseInt(parts[2]);
+        const lastDay = new Date(year, month + 1, 0).getDate(); // ওই নির্দিষ্ট মাসের শেষ তারিখ
+
+        let updates = {};
+        // সিলেক্ট করা দিন থেকে মাসের শেষ দিন পর্যন্ত লুপ চলবে
+        for(let d = startDay; d <= lastDay; d++) {
+            const dStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+            const mKey = dStr.substring(0, 7);
+            updates[`records/${mKey}/${dStr}/${currentUser}/${type}`] = newState;
+        }
+
+        // ফায়ারবেসে একসাথে সব দিনের ডাটা পাঠিয়ে দেওয়া হচ্ছে
+        update(ref(db), updates).then(() => {
             btn.innerText = newState;
             btn.className = `toggle-btn ${newState === "ON" ? "btn-on" : "btn-off"}`;
-            showSuccess("মিল শিডিউল সফলভাবে পরিবর্তিত হয়েছে!");
+            
+            if (newState === "OFF") {
+                showSuccess("মিল অফ করা হয়েছে (অন না করা পর্যন্ত বন্ধ থাকবে)!");
+            } else {
+                showSuccess("মিল অন করা হয়েছে (অফ না করা পর্যন্ত চালু থাকবে)!");
+            }
         });
     }
     
